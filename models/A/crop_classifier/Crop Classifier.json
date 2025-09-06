@@ -1,0 +1,171 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "f7fde849-fa9d-4051-974a-413feebf7caa",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pickle"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "1fe7196c-2021-4355-87a3-a3729d2d1eee",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Soil Classifier"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "db7d8d7a-6a09-414a-b10c-180be1f56978",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#XGBoost Classifier"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "3190d239-ee8d-4af2-9bb7-06c76f769f44",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "XGBC = pickle.load(open(\"XGBoostClassifier.pkl\", \"rb\"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "8e03a6ad-0962-487b-8b8d-ac98b14b7b85",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Random Forest Classifier "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "af25372c-8c10-4251-8407-c09683725f62",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "RFC = pickle.load(open(\"RandomForestClassifier.pkl\", \"rb\"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "7870050f-e462-43cc-b153-752ebd614d77",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Importing Label Encoder"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "3de56b24-3edc-47e7-b6cd-a01ae5c062e7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "le = pickle.load(open(\"LabelEncoder.pkl\", \"rb\"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "3394bbe1-c1d4-4ee8-8d4b-5d32e47e6088",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def XGBpredict():\n",
+    "    try:\n",
+    "        data = request.get_json()\n",
+    "        # Example: extracting values\n",
+    "        Nitrogen = float(data[\"Nitrogen\"])\n",
+    "        Phosphorus = float(data[\"Phosphorus\"])\n",
+    "        Potassium = float(data[\"Potassium\"])\n",
+    "        temprature = float(data[\"temprature\"])\n",
+    "        humidty = float(data[\"humidity\"])\n",
+    "        ph = float(data[\"ph\"])\n",
+    "        rainfall = float(data[\"rainfall\"])\n",
+    "    \n",
+    "        # Put into model input format\n",
+    "        features = np.array([[Nitrogen, Phosphorus, Potassium, temprature, humidity, ph, rainfall]])\n",
+    "        encoded_prediction = XGBC.predict(features)[0]\n",
+    "        prediction = le.inverse_transform([encoded_prediction])[0]\n",
+    "    \n",
+    "        return jsonify({\"prediction\": prediction})\n",
+    "    except Exception as e:\n",
+    "        return jsonif({\"error\": str(e)})"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "d0d2a91c-6ff9-426a-aa48-d12c5235de57",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def RFCpredict():\n",
+    "    try:\n",
+    "        data = request.get_json()\n",
+    "        # Example: extracting values\n",
+    "        Nitrogen = float(data[\"Nitrogen\"])\n",
+    "        Phosphorus = float(data[\"Phosphorus\"])\n",
+    "        Potassium = float(data[\"Potassium\"])\n",
+    "        temprature = float(data[\"temprature\"])\n",
+    "        humidty = float(data[\"humidity\"])\n",
+    "        ph = float(data[\"ph\"])\n",
+    "        rainfall = float(data[\"rainfall\"])\n",
+    "    \n",
+    "        # Put into model input format\n",
+    "        features = np.array([[Nitrogen, Phosphorus, Potassium, temprature, humidity, ph, rainfall]])\n",
+    "        encoded_prediction = RFC.predict(features)[0]\n",
+    "        prediction = le.inverse_transform([encoded_prediction])[0]\n",
+    "    \n",
+    "        return jsonify({\"prediction\": prediction})\n",
+    "    except Exception as e:\n",
+    "        return jsonify({\"error\": str(e)})"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "096d0549-31f3-4602-a2ef-0f8212cd7445",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python [conda env:base] *",
+   "language": "python",
+   "name": "conda-base-py"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.13.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

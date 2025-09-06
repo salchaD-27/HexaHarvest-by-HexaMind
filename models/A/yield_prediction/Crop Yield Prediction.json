@@ -1,0 +1,215 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "id": "34aeac1c-7dba-422b-a1b2-7fa7d79d9520",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pickle"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "id": "5b726b69-e59a-45bb-a28a-ca0114b87cc9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Crop Yield Prediction"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "id": "d8874a88-c23c-4fab-bdf0-61635bbcb845",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Decision Tree Regression"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "id": "b38fa9a9-ca4a-4b89-895f-6eee615b6059",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "DTR = pickle.load(open(\"DecisionTreeRegression.pkl\", \"rb\"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "id": "4110a5ed-6ce1-461b-b59a-a67bd6ed9434",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Random Forest Regression"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "id": "521fc97c-b1f5-426c-830f-700f20e4b7d2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "RFR = pickle.load(open(\"RandomForestRegression.pkl\", \"rb\"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "id": "bc5aa148-446c-44f9-8bef-dd2706989fc6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#XGBoost Regression"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "id": "ab320944-560e-4e0d-af45-7034f1397331",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "XGBR = pickle.load(open(\"XGBoostClassifier.pkl\", \"rb\"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "id": "c43fc45a-3fb5-4177-ac3d-8e362ab9b661",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Importing One Hot Encoder"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "id": "4f215575-b6a7-4d08-bdf7-1e4bc1173e4b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ct = pickle.load(open(\"OHEncoder.pkl\", \"rb\"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "id": "c0a95615-4f8b-4b70-8b83-924b49043550",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def DTpredict():\n",
+    "    try:\n",
+    "        data = request.get_json()\n",
+    "        # Example: extracting values\n",
+    "        Crop = data[\"Crop\"]\n",
+    "        Season = data[\"Season\"]\n",
+    "        State = data[\"State\"]\n",
+    "        Area = float(data[\"Area\"])\n",
+    "        Production = float(data[\"Production\"])\n",
+    "        Annual_Rainfall = float(data[\"Annual_Rainfall\"])\n",
+    "        Fertilizer = float(data[\"Fertilizer\"])\n",
+    "        Pesticide = float(data[\"Pesticide\"])\n",
+    "    \n",
+    "        # Put into model input format\n",
+    "        features = [[Crop, Season, State, Area, Production, Annual_Rainfall, Fertilizer, Pesticide]]\n",
+    "        features = ct.transform(features)\n",
+    "        prediction = DTR.predict(features)[0]\n",
+    "    \n",
+    "        return jsonify({\"prediction\": float(prediction)})\n",
+    "    except Exception as e:\n",
+    "        return jsonify({\"error\": str(e)})"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "id": "2da96d40-334e-4f00-b655-d6794b4e6d5e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def RFpredict():\n",
+    "    try:\n",
+    "        data = request.get_json()\n",
+    "        # Example: extracting values\n",
+    "        Crop = data[\"Crop\"]\n",
+    "        Season = data[\"Season\"]\n",
+    "        State = data[\"State\"]\n",
+    "        Area = float(data[\"Area\"])\n",
+    "        Production = float(data[\"Production\"])\n",
+    "        Annual_Rainfall = float(data[\"Annual_Rainfall\"])\n",
+    "        Fertilizer = float(data[\"Fertilizer\"])\n",
+    "        Pesticide = float(data[\"Pesticide\"])\n",
+    "    \n",
+    "        # Put into model input format\n",
+    "        features = [[Crop, Season, State, Area, Production, Annual_Rainfall, Fertilizer, Pesticide]]\n",
+    "        features = ct.transform(features)\n",
+    "        prediction = RFR.predict(features)[0]\n",
+    "    \n",
+    "        return jsonify({\"prediction\": float(prediction)})\n",
+    "    except Exception as e:\n",
+    "        return jsonify({\"error\": str(e)})"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "id": "0908fee3-f7cb-4bf7-a532-37a1bf440287",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def XGBpredict():\n",
+    "    try:\n",
+    "        data = request.get_json()\n",
+    "        # Example: extracting values\n",
+    "        Crop = data[\"Crop\"]\n",
+    "        Season = data[\"Season\"]\n",
+    "        State = data[\"State\"]\n",
+    "        Area = float(data[\"Area\"])\n",
+    "        Production = float(data[\"Production\"])\n",
+    "        Annual_Rainfall = float(data[\"Annual_Rainfall\"])\n",
+    "        Fertilizer = float(data[\"Fertilizer\"])\n",
+    "        Pesticide = float(data[\"Pesticide\"])\n",
+    "    \n",
+    "        # Put into model input format\n",
+    "        features = [[Crop, Season, State, Area, Production, Annual_Rainfall, Fertilizer, Pesticide]]\n",
+    "        features = ct.transform(features)\n",
+    "        prediction = XGBR.predict(features)[0]\n",
+    "    \n",
+    "        return jsonify({\"prediction\": float(prediction)})\n",
+    "    except Exception as e:\n",
+    "        return jsonify({\"error\": str(e)})"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python [conda env:base] *",
+   "language": "python",
+   "name": "conda-base-py"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.13.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
