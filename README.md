@@ -1,4 +1,4 @@
-# HexaHarvese: AI-Driven Agri-Livestock Digital Management Portal
+# HexaHarvest: AI-Driven Agri-Livestock Digital Management Portal
 
 ## 🚀 Unified Solution for Smart Farming, Biosecurity, and Antimicrobial Stewardship
 
